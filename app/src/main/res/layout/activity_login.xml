@@ -6,8 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="@dimen/activity_horizontal_margin"
-    tools:context=".ui.login.LoginActivity"
-    android:background="?colorPrimary">
+    tools:context=".ui.login.LoginActivity">
 
     <ImageView
         android:id="@+id/logo"
@@ -25,7 +24,8 @@
         android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/logo">
+        app:layout_constraintTop_toBottomOf="@id/logo"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/username"
@@ -41,9 +41,11 @@
         android:id="@+id/password_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/username_layout">
+        app:layout_constraintTop_toBottomOf="@+id/username_layout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/password"
@@ -65,7 +67,7 @@
         android:enabled="false"
         android:padding="16dp"
         android:textAllCaps="false"
-        android:backgroundTint="@color/white"
+        android:backgroundTint="@color/yellow"
         android:textColor="?android:textColorPrimary"
         android:text="@string/action_sign_in_short"
         app:layout_constraintBottom_toBottomOf="parent"

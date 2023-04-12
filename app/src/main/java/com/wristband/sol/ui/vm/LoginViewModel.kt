@@ -1,4 +1,4 @@
-package com.wristband.sol.ui.login
+package com.wristband.sol.ui.vm
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -7,9 +7,13 @@ import android.util.Patterns
 import com.wristband.sol.R
 import com.wristband.sol.data.repositories.LoginRepository
 import com.wristband.sol.data.Result
+import com.wristband.sol.ui.login.LoginFormState
+import com.wristband.sol.ui.login.LoginResult
+import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlin.concurrent.thread
 
+@HiltViewModel
 class LoginViewModel @Inject constructor(private val loginRepository: LoginRepository) : ViewModel() {
 
     private val _loginForm = MutableLiveData<LoginFormState>()

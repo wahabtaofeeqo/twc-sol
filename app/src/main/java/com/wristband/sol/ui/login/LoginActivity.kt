@@ -13,9 +13,9 @@ import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.google.android.material.textfield.TextInputEditText
-import com.wristband.sol.MainActivity
 import com.wristband.sol.data.SessionManager
 import com.wristband.sol.databinding.ActivityLoginBinding
+import com.wristband.sol.ui.vm.LoginViewModel
 import com.wristband.sol.ui.welcome.WelcomeActivity
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -23,10 +23,10 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class LoginActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityLoginBinding
-
     @Inject
-    private lateinit var sessionManager: SessionManager
+    lateinit var sessionManager: SessionManager
+
+    private lateinit var binding: ActivityLoginBinding
 
     private val viewModel: LoginViewModel by viewModels()
 
@@ -40,8 +40,8 @@ class LoginActivity : AppCompatActivity() {
 
         val login = binding.login
         val loading = binding.loading
-        val username = binding.username as TextInputEditText
-        val password = binding.password as TextInputEditText
+        val username = binding.username
+        val password = binding.password
 
         viewModel.loginFormState.observe(this@LoginActivity, Observer {
             val loginState = it ?: return@Observer
@@ -65,7 +65,10 @@ class LoginActivity : AppCompatActivity() {
                 showLoginFailed(loginResult.error)
             }
 
-            if (loginResult.success != null) toMain()
+            if (loginResult.success != null) {
+                sessionManager.login(loginResult.success)
+                toMain()
+            }
         })
 
         username.afterTextChanged {
