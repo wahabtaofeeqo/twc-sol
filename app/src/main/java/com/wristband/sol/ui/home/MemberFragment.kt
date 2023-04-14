@@ -106,12 +106,10 @@ class MemberFragment : Fragment() {
         handler.post {
             viewModel.apiResult.observe(requireActivity(), Observer {
                 val response = it?: return@Observer
-                if(!response.status)
-                    Toast.makeText(context, response.message, Toast.LENGTH_LONG).show()
-                else {
+                if(response.status)
                     viewModel.updateAll(response.data!!)
-                }
                 binding.progress.visibility = View.GONE
+                Toast.makeText(context, response.message, Toast.LENGTH_LONG).show()
             })
         }
     }

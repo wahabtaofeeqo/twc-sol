@@ -52,7 +52,6 @@ class TicketViewModel @Inject constructor(private val repository: TicketReposito
                 }
 
                 override fun onFailure(call: Call<Response<String>>, t: Throwable) {
-                    t.printStackTrace()
                     _postResponse.postValue(Response(false, "Operation not succeeded"))
                 }
             })

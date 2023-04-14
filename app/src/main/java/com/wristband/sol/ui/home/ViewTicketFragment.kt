@@ -2,7 +2,9 @@ package com.wristband.sol.ui.home
 
 import android.os.Bundle
 import android.view.*
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -69,6 +71,12 @@ class ViewTicketFragment : Fragment() {
 
         adapter.addLoadStateListener {
             if(adapter.itemCount > 0) binding.noRecord.visibility = View.GONE
+        }
+
+        viewModel.postResponse.observe(requireActivity()) {
+            val result = it?:return@observe
+            binding.progress.isVisible = false
+            Toast.makeText(requireContext(), result.message, Toast.LENGTH_LONG).show()
         }
     }
 

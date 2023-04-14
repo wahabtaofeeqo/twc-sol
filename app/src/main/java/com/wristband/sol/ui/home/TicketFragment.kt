@@ -88,7 +88,6 @@ class TicketFragment : ValidationListener, Fragment() {
         this.initValidatorViews()
 
         binding.back.setOnClickListener {
-            Log.i("@@@@@@@TAG","Clicked")
             parentFragmentManager.popBackStack()
         }
 

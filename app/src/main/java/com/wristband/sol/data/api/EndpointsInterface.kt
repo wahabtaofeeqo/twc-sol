@@ -11,9 +11,9 @@ import retrofit2.http.POST
 
 interface EndpointsInterface {
 
-    @GET("users")
+    @GET("members")
     fun loadMembers(): Call<Response<List<Member>>>
 
-    @POST("bookings")
+    @POST("tickets")
     fun postTickets(@Body dto: BookingDTO): Call<Response<String>>
 }
