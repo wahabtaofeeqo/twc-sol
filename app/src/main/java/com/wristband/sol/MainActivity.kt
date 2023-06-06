@@ -23,10 +23,12 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun changeFragment(fragment: Fragment) {
-        supportFragmentManager
+    fun changeFragment(fragment: Fragment, addToBackTrack: Boolean = false) {
+        val transaction = supportFragmentManager
             .beginTransaction()
-            .setReorderingAllowed(true)
-            .replace(R.id.container, fragment).commit()
+            .replace(R.id.container, fragment)
+
+        if(addToBackTrack) transaction.addToBackStack(null)
+        transaction.commit()
     }
 }

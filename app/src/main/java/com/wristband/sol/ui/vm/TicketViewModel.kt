@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.paging.PagingData
 import com.wristband.sol.data.Response
+import com.wristband.sol.data.model.BluetoothDetails
 import com.wristband.sol.data.model.Ticket
 import com.wristband.sol.data.repositories.TicketRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -27,6 +28,9 @@ class TicketViewModel @Inject constructor(private val repository: TicketReposito
 
     private val _bookings = MutableLiveData<Int>()
     val bookings: LiveData<Int> = _bookings
+
+    private val _bluetooth = MutableLiveData<BluetoothDetails>()
+    val bluetooth: LiveData<BluetoothDetails> = _bluetooth
 
     fun createTicket(model: Ticket) {
         thread(true) {
@@ -62,5 +66,9 @@ class TicketViewModel @Inject constructor(private val repository: TicketReposito
         thread(true) {
             _bookings.postValue(repository.countAll())
         }
+    }
+
+    fun bluetoothSelected(bluetoothDetails: BluetoothDetails) {
+        _bluetooth.value = bluetoothDetails
     }
 }

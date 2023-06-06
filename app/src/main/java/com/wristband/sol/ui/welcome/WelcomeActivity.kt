@@ -60,7 +60,6 @@ class WelcomeActivity : AppCompatActivity() {
         binding.recycler.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
         binding.recycler.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
-
         lifecycleScope.launch {
             viewModel.loadTickets(10).collectLatest { adapter.submitData(it) }
         }

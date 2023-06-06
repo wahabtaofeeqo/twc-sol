@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import com.google.android.material.textfield.TextInputEditText
@@ -18,6 +19,7 @@ import com.mobsandgeeks.saripaar.Validator.ValidationListener
 import com.mobsandgeeks.saripaar.annotation.Length
 import com.mobsandgeeks.saripaar.annotation.Min
 import com.mobsandgeeks.saripaar.annotation.NotEmpty
+import com.wristband.sol.MainActivity
 import com.wristband.sol.R
 import com.wristband.sol.data.model.Ticket
 import com.wristband.sol.databinding.FragmentTicketBinding
@@ -38,7 +40,7 @@ import java.util.*
 class TicketFragment : ValidationListener, Fragment() {
 
     private lateinit var validator: Validator
-    private val viewModel: TicketViewModel by viewModels()
+    private val viewModel: TicketViewModel by activityViewModels()
 
     @NotEmpty
     private lateinit var name: TextInputEditText
@@ -63,10 +65,15 @@ class TicketFragment : ValidationListener, Fragment() {
     private val canabas = listOf("Beach-side Bed (2 ppl)", "Poolside Bed (2 ppl)",
         "Beach-side Standard Cabana (6 ppl)", "Beach-side large Cabana (10 ppl)")
 
+    private lateinit var mainActivity: MainActivity
+
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         validator = Validator(this)
         validator.setValidationListener(this)
+        mainActivity = activity as MainActivity
     }
 
     companion object {
@@ -87,14 +94,13 @@ class TicketFragment : ValidationListener, Fragment() {
         this.setInputAdapters()
         this.initValidatorViews()
 
-        binding.back.setOnClickListener {
-            parentFragmentManager.popBackStack()
-        }
+        binding.back.setOnClickListener { activity?.finish() }
 
         //
         binding.accessType.afterTextChanged {
             this.updateCost()
         }
+
         binding.accessQuantity.afterTextChanged {
             this.updateCost()
         }
@@ -102,6 +108,7 @@ class TicketFragment : ValidationListener, Fragment() {
         binding.packageType.afterTextChanged {
             this.updateCost()
         }
+
         binding.packageQuantity.afterTextChanged {
             this.updateCost()
         }
@@ -118,13 +125,21 @@ class TicketFragment : ValidationListener, Fragment() {
             validator.validate()
         }
 
+        // connect bluetooth
+        binding.connect.setOnClickListener {
+            mainActivity.changeFragment(BluetoothFragment.newInstance(), true)
+        }
+
         //
         viewModel.createResponse.observe(requireActivity()) {
             val result = it?:return@observe
-
             if(result.status) this.resetForm()
             binding.loading.isVisible = false
             Toast.makeText(requireContext(), result.message, Toast.LENGTH_LONG).show()
+        }
+
+        viewModel.bluetooth.observe(requireActivity()) {
+            if(it != null) binding.connect.isVisible = false
         }
     }
 
@@ -238,5 +253,9 @@ class TicketFragment : ValidationListener, Fragment() {
             if (view is TextInputEditText) { view.error = message }
             if (view is MaterialAutoCompleteTextView) { view.error = message }
         }
+    }
+
+    private fun printQrCode() {
+
     }
 }
