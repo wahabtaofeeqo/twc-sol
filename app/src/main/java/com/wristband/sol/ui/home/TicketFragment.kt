@@ -1,7 +1,6 @@
 package com.wristband.sol.ui.home
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,9 +9,13 @@ import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import com.google.android.material.textfield.TextInputEditText
+import com.gprinter.bean.PrinterDevices
+import com.gprinter.utils.CallbackListener
+import com.gprinter.utils.Command
+import com.gprinter.utils.ConnMethod
+import com.gprinter.utils.LogUtils
 import com.mobsandgeeks.saripaar.ValidationError
 import com.mobsandgeeks.saripaar.Validator
 import com.mobsandgeeks.saripaar.Validator.ValidationListener
@@ -20,11 +23,13 @@ import com.mobsandgeeks.saripaar.annotation.Length
 import com.mobsandgeeks.saripaar.annotation.Min
 import com.mobsandgeeks.saripaar.annotation.NotEmpty
 import com.wristband.sol.MainActivity
+import com.wristband.sol.PrintContent
+import com.wristband.sol.Printer
 import com.wristband.sol.R
+import com.wristband.sol.data.model.BluetoothDetails
 import com.wristband.sol.data.model.Ticket
 import com.wristband.sol.databinding.FragmentTicketBinding
 import com.wristband.sol.ui.login.afterTextChanged
-import com.wristband.sol.ui.vm.LoginViewModel
 import com.wristband.sol.ui.vm.TicketViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
@@ -37,7 +42,7 @@ import java.util.*
  */
 
 @AndroidEntryPoint
-class TicketFragment : ValidationListener, Fragment() {
+class TicketFragment : ValidationListener, CallbackListener, Fragment() {
 
     private lateinit var validator: Validator
     private val viewModel: TicketViewModel by activityViewModels()
@@ -65,9 +70,9 @@ class TicketFragment : ValidationListener, Fragment() {
     private val canabas = listOf("Beach-side Bed (2 ppl)", "Poolside Bed (2 ppl)",
         "Beach-side Standard Cabana (6 ppl)", "Beach-side large Cabana (10 ppl)")
 
+    private var printer: Printer = Printer.instance
+
     private lateinit var mainActivity: MainActivity
-
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -139,7 +144,10 @@ class TicketFragment : ValidationListener, Fragment() {
         }
 
         viewModel.bluetooth.observe(requireActivity()) {
-            if(it != null) binding.connect.isVisible = false
+            if(it != null) {
+                setupPrinter(it)
+                binding.connect.isEnabled = false
+            }
         }
     }
 
@@ -253,9 +261,62 @@ class TicketFragment : ValidationListener, Fragment() {
             if (view is TextInputEditText) { view.error = message }
             if (view is MaterialAutoCompleteTextView) { view.error = message }
         }
+
+        printLabel()
     }
 
-    private fun printQrCode() {
+    private fun printLabel() {
+        try {
+            val result: Boolean = Printer.portManager!!
+                .writeDataImmediately(PrintContent.getLabel(requireContext(), 10, "Taocoder"))
+            if (result) {
+                //tipsDialog(getString(R.string.send_success))
+            } else {
+                //tipsDialog(getString(R.string.send_fail))
+            }
+        }
+        catch (_ : Exception) {}
+        finally {
+            if (Printer.portManager == null) {
+                Printer.close()
+            }
+        }
+    }
 
+    private fun setupPrinter(details: BluetoothDetails) {
+        val blueTooth = PrinterDevices.Build()
+            .setContext(context)
+            .setConnMethod(ConnMethod.BLUETOOTH)
+            .setMacAddress(details.mac)
+            .setCommand(Command.TSC)
+            .setCallbackListener(this).build()
+
+        Printer.connect(blueTooth)
+    }
+
+    override fun onConnecting() {
+        // Toast.makeText(context, "Connecting...", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onCheckCommand() {
+        // Toast.makeText(context, "Command", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onSuccess(p0: PrinterDevices?) {
+        binding.connect.isVisible = false
+        // Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onReceive(p0: ByteArray?) {
+        // Toast.makeText(context, "Received", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onFailure() {
+        binding.connect.isEnabled = true
+        Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onDisconnect() {
+        // Toast.makeText(context, "Disconnect", Toast.LENGTH_SHORT).show()
     }
 }
