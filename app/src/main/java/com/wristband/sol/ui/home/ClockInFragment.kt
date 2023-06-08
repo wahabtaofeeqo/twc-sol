@@ -92,11 +92,11 @@ class ClockInFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId) {
             R.id.scan -> {
-                mainActivity.changeFragment(ScanFragment.newInstance())
+                mainActivity.changeFragment(ScanFragment.newInstance(), true)
             }
 
             R.id.members -> {
-                mainActivity.changeFragment(MemberFragment.newInstance())
+                mainActivity.changeFragment(MemberFragment.newInstance(), true)
             }
 
             R.id.export -> createFile()

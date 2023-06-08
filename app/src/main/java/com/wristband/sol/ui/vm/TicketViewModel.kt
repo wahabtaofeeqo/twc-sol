@@ -1,6 +1,5 @@
 package com.wristband.sol.ui.vm
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -11,7 +10,6 @@ import com.wristband.sol.data.model.Ticket
 import com.wristband.sol.data.repositories.TicketRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
-import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import javax.inject.Inject
@@ -20,8 +18,8 @@ import kotlin.concurrent.thread
 @HiltViewModel
 class TicketViewModel @Inject constructor(private val repository: TicketRepository): ViewModel() {
 
-    private val _createResponse = MutableLiveData<Response<Ticket>>()
-    val createResponse: LiveData<Response<Ticket>> = _createResponse
+    val _createResponse = MutableLiveData<Response<Ticket>?>()
+    val createResponse: LiveData<Response<Ticket>?> = _createResponse
 
     private val _postResponse = MutableLiveData<Response<String>>()
     val postResponse: LiveData<Response<String>> = _postResponse

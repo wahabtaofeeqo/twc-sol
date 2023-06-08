@@ -63,14 +63,14 @@ class TicketFragment : ValidationListener, CallbackListener, Fragment() {
 
     private lateinit var binding: FragmentTicketBinding
 
-    private val accessTypes = listOf("Adults", "7 - 17 Years", "6 Years and below")
+    private val accessTypes = listOf("General", "Adults", "7 - 17 Years", "6 Years and below")
     private val packages = listOf("Umbrella", "Beach-side Lounger", "Poolside Lounger",
         "Beach-side Picnic Pallet (6 ppl)", "Beach-side Micro Bench (3 ppl)", "Beach-side Deluxe Lounger (2 ppl)")
 
     private val canabas = listOf("Beach-side Bed (2 ppl)", "Poolside Bed (2 ppl)",
         "Beach-side Standard Cabana (6 ppl)", "Beach-side large Cabana (10 ppl)")
 
-    private var printer: Printer = Printer.instance
+    private var connected = false
 
     private lateinit var mainActivity: MainActivity
 
@@ -138,7 +138,12 @@ class TicketFragment : ValidationListener, CallbackListener, Fragment() {
         //
         viewModel.createResponse.observe(requireActivity()) {
             val result = it?:return@observe
-            if(result.status) this.resetForm()
+            if(result.status)  {
+                printLabel()
+                this.resetForm()
+                viewModel._createResponse.value = null
+            }
+
             binding.loading.isVisible = false
             Toast.makeText(requireContext(), result.message, Toast.LENGTH_LONG).show()
         }
@@ -193,7 +198,8 @@ class TicketFragment : ValidationListener, CallbackListener, Fragment() {
     private fun currentAccessTypeCost(): Int {
         val cost = when(accessTypes.indexOf(binding.accessType.text.toString())) {
             0 -> 5000
-            1 -> 3000
+            1 -> 5000
+            2 -> 3000
             else -> 0
         }
 
@@ -247,8 +253,10 @@ class TicketFragment : ValidationListener, CallbackListener, Fragment() {
 
     override fun onValidationSucceeded() {
         binding.loading.isVisible = true
-        val model = Ticket(name = name.text.toString(), phone = phone.text.toString(), cost = calculateCost(),
-            accessType = accessType.text.toString(), accessQuantity = accessQuantity.text.toString().toInt(), date = Date())
+        val model = Ticket(name = name.text.toString(),
+            phone = phone.text.toString(), cost = calculateCost(),
+            accessType = accessType.text.toString(), accessQuantity = accessQuantity.text.toString().toInt(),
+            date = Date())
 
         viewModel.createTicket(model)
     }
@@ -261,14 +269,14 @@ class TicketFragment : ValidationListener, CallbackListener, Fragment() {
             if (view is TextInputEditText) { view.error = message }
             if (view is MaterialAutoCompleteTextView) { view.error = message }
         }
-
-        printLabel()
     }
 
     private fun printLabel() {
+        if (!connected) return
         try {
+            val code = generateCode()
             val result: Boolean = Printer.portManager!!
-                .writeDataImmediately(PrintContent.getLabel(requireContext(), 10, "Taocoder"))
+                .writeDataImmediately(PrintContent.getLabel(requireContext(), 0, code))
             if (result) {
                 //tipsDialog(getString(R.string.send_success))
             } else {
@@ -303,6 +311,7 @@ class TicketFragment : ValidationListener, CallbackListener, Fragment() {
     }
 
     override fun onSuccess(p0: PrinterDevices?) {
+        connected = true
         binding.connect.isVisible = false
         // Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show()
     }
@@ -318,5 +327,10 @@ class TicketFragment : ValidationListener, CallbackListener, Fragment() {
 
     override fun onDisconnect() {
         // Toast.makeText(context, "Disconnect", Toast.LENGTH_SHORT).show()
+    }
+
+    fun generateCode(): String {
+        val randomPin = (Math.random() * 10000).toInt() + 1000
+        return randomPin.toString()
     }
 }

@@ -47,7 +47,9 @@ class ScanFragment : Fragment() {
 
         super.onViewCreated(view, savedInstanceState)
         binding.back.setOnClickListener {
-            mainActivity.supportFragmentManager.popBackStack()
+            if (mainActivity.supportFragmentManager.backStackEntryCount > 0)
+                mainActivity.supportFragmentManager.popBackStack()
+            else mainActivity.finish()
         }
 
         binding.code.afterTextChanged {

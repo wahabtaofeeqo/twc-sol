@@ -31,7 +31,7 @@ object PrintContent {
 
         // 设置标签尺寸宽高，按照实际尺寸设置 单位mm
         tsc.addUserCommand("\r\n")
-        tsc.addSize(25, 100)
+        tsc.addSize(25, 250)
 
         // 设置标签间隙，按照实际尺寸设置，如果为无间隙纸则设置为0 单位mm
         tsc.addGap(0)
@@ -54,7 +54,7 @@ object PrintContent {
 
         // 绘制简体中文
         tsc.addText(
-            35, 200,
+            35, 100,
             LabelCommand.FONTTYPE.Bold,
             LabelCommand.ROTATION.ROTATION_0,
             LabelCommand.FONTMUL.MUL_1,
@@ -87,8 +87,8 @@ object PrintContent {
         //tsc.drawJPGImage(200,250,200, b2);
 
         //绘制二维码
-        tsc.addQRCode(30, 50,
-            LabelCommand.EEC.LEVEL_L, 6,
+        tsc.addQRCode(30, 125,
+            LabelCommand.EEC.LEVEL_L, 7,
             LabelCommand.ROTATION.ROTATION_0, content)
 
         // 绘制一维条码
