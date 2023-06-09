@@ -46,4 +46,5 @@
     <string name="upload_message">This will send all the local Tickets to remote Server.</string>
     <string name="view">View</string>
     <string name="action_connect_printer">Connect Printer</string>
+    <string name="additional_packages">Additional packages</string>
 </resources>

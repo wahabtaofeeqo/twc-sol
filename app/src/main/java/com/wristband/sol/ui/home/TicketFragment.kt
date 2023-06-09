@@ -26,6 +26,7 @@ import com.wristband.sol.MainActivity
 import com.wristband.sol.PrintContent
 import com.wristband.sol.Printer
 import com.wristband.sol.R
+import com.wristband.sol.data.SessionManager
 import com.wristband.sol.data.model.BluetoothDetails
 import com.wristband.sol.data.model.Ticket
 import com.wristband.sol.databinding.FragmentTicketBinding
@@ -33,6 +34,7 @@ import com.wristband.sol.ui.login.afterTextChanged
 import com.wristband.sol.ui.vm.TicketViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
+import javax.inject.Inject
 
 
 /**
@@ -60,6 +62,9 @@ class TicketFragment : ValidationListener, CallbackListener, Fragment() {
     @NotEmpty
     @Min(value = 1)
     private lateinit var accessQuantity: TextInputEditText
+
+    @Inject
+    lateinit var sessionManager: SessionManager
 
     private lateinit var binding: FragmentTicketBinding
 
@@ -275,8 +280,10 @@ class TicketFragment : ValidationListener, CallbackListener, Fragment() {
         if (!connected) return
         try {
             val code = generateCode()
+            val counter = sessionManager.increaseCounter()
+
             val result: Boolean = Printer.portManager!!
-                .writeDataImmediately(PrintContent.getLabel(requireContext(), 0, code))
+                .writeDataImmediately(PrintContent.getLabel(requireContext(), code, counter))
             if (result) {
                 //tipsDialog(getString(R.string.send_success))
             } else {

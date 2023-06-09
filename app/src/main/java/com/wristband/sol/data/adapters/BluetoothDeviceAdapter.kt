@@ -5,8 +5,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
 import com.wristband.sol.data.model.BluetoothDetails
-
-import com.wristband.sol.ui.home.placeholder.PlaceholderContent.PlaceholderItem
 import com.wristband.sol.databinding.FragmentBluetoothListBinding
 
 /**

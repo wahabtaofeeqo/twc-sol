@@ -3,6 +3,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
+import android.util.Log
 import android.view.View
 import android.widget.TableLayout
 import android.widget.TableRow
@@ -10,6 +11,9 @@ import android.widget.TextView
 import com.gprinter.command.LabelCommand
 import java.io.BufferedReader
 import java.io.InputStreamReader
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import java.util.Vector
 
 
@@ -26,12 +30,13 @@ object PrintContent {
      *
      * @return
      */
-    fun getLabel(context: Context, gap: Int, content: String): Vector<Byte> {
+    fun getLabel(context: Context, content: String, counter: Int): Vector<Byte> {
+
         val tsc = LabelCommand()
 
         // 设置标签尺寸宽高，按照实际尺寸设置 单位mm
         tsc.addUserCommand("\r\n")
-        tsc.addSize(25, 250)
+        tsc.addSize(25, 275)
 
         // 设置标签间隙，按照实际尺寸设置，如果为无间隙纸则设置为0 单位mm
         tsc.addGap(0)
@@ -52,14 +57,35 @@ object PrintContent {
         // 清除打印缓冲区
         tsc.addCls()
 
-        // 绘制简体中文
+        // Company
         tsc.addText(
-            35, 100,
+            20, 1000,
             LabelCommand.FONTTYPE.Bold,
             LabelCommand.ROTATION.ROTATION_0,
             LabelCommand.FONTMUL.MUL_1,
             LabelCommand.FONTMUL.MUL_1,
-            "WristbandsNG"
+            "SolBeach"
+        )
+
+        // Number
+        tsc.addText(
+            20, 1100,
+            LabelCommand.FONTTYPE.Bold,
+            LabelCommand.ROTATION.ROTATION_0,
+            LabelCommand.FONTMUL.MUL_1,
+            LabelCommand.FONTMUL.MUL_1,
+            "# $counter"
+        )
+
+        // Date
+        val todayDate = SimpleDateFormat("dd MMMM yyyy", Locale.getDefault()).format(Date())
+        tsc.addText(
+            20, 1150,
+            LabelCommand.FONTTYPE.Bold,
+            LabelCommand.ROTATION.ROTATION_0,
+            LabelCommand.FONTMUL.MUL_1,
+            LabelCommand.FONTMUL.MUL_1,
+            todayDate
         )
 
         //打印繁体
@@ -87,7 +113,7 @@ object PrintContent {
         //tsc.drawJPGImage(200,250,200, b2);
 
         //绘制二维码
-        tsc.addQRCode(30, 125,
+        tsc.addQRCode(20, 1300,
             LabelCommand.EEC.LEVEL_L, 7,
             LabelCommand.ROTATION.ROTATION_0, content)
 

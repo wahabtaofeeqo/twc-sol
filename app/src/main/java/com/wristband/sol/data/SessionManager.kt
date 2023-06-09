@@ -13,6 +13,7 @@ class SessionManager private constructor(private val context: Context) {
         const val USERNAME = "name"
         const val USER_ID = "userId"
         const val LOGGED_IN = "loggedIn"
+        const val NUM_COUNTER = "generated-qr"
         const val NAME = "com.wristband.sol.session"
 
         @JvmStatic
@@ -44,5 +45,11 @@ class SessionManager private constructor(private val context: Context) {
 
     fun isLoggedIn(): Boolean {
         return sharedPreferences?.getBoolean(LOGGED_IN, false) ?: false
+    }
+
+    fun increaseCounter(): Int {
+        val num = sharedPreferences!!.getInt(NUM_COUNTER, 0)
+        editor!!.putInt(NUM_COUNTER, num + 1)
+        return num + 1
     }
 }
