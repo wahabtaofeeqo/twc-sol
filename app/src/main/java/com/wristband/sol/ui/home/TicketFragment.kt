@@ -49,12 +49,12 @@ class TicketFragment : ValidationListener, CallbackListener, Fragment() {
     private lateinit var validator: Validator
     private val viewModel: TicketViewModel by activityViewModels()
 
-    @NotEmpty
-    private lateinit var name: TextInputEditText
+//    @NotEmpty
+//    private lateinit var name: TextInputEditText
 
-    @NotEmpty
-    @Length(trim = true, min = 11, max = 12)
-    private lateinit var phone: TextInputEditText
+//    @NotEmpty
+//    @Length(trim = true, min = 11, max = 12)
+//    private lateinit var phone: TextInputEditText
 
     @NotEmpty
     private lateinit var accessType: MaterialAutoCompleteTextView
@@ -162,8 +162,8 @@ class TicketFragment : ValidationListener, CallbackListener, Fragment() {
     }
 
     private fun resetForm() {
-        name.text?.clear()
-        phone.text?.clear()
+        // name.text?.clear()
+        // phone.text?.clear()
         accessType.text.clear()
         accessQuantity.text?.clear()
         binding.packageType.text.clear()
@@ -250,18 +250,17 @@ class TicketFragment : ValidationListener, CallbackListener, Fragment() {
     }
 
     private fun initValidatorViews() {
-        name = binding.name
-        phone = binding.phone
+        // name = binding.name
+        // phone = binding.phone
         accessType = binding.accessType
         accessQuantity = binding.accessQuantity
     }
 
     override fun onValidationSucceeded() {
         binding.loading.isVisible = true
-        val model = Ticket(name = name.text.toString(),
-            phone = phone.text.toString(), cost = calculateCost(),
-            accessType = accessType.text.toString(), accessQuantity = accessQuantity.text.toString().toInt(),
-            date = Date())
+        val model = Ticket(name = "", phone = "",
+            cost = calculateCost(), accessType = accessType.text.toString(),
+            accessQuantity = accessQuantity.text.toString().toInt(), date = Date())
 
         viewModel.createTicket(model)
     }
