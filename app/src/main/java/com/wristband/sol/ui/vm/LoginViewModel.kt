@@ -5,16 +5,21 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import android.util.Patterns
 import com.wristband.sol.R
+import com.wristband.sol.data.LoginDTO
+import com.wristband.sol.data.Response
 import com.wristband.sol.data.repositories.LoginRepository
 import com.wristband.sol.data.Result
+import com.wristband.sol.data.model.User
 import com.wristband.sol.ui.login.LoginFormState
 import com.wristband.sol.ui.login.LoginResult
 import dagger.hilt.android.lifecycle.HiltViewModel
+import retrofit2.Call
+import retrofit2.Callback
 import javax.inject.Inject
 import kotlin.concurrent.thread
 
 @HiltViewModel
-class LoginViewModel @Inject constructor(private val loginRepository: LoginRepository) : ViewModel() {
+class LoginViewModel @Inject constructor(private val repository: LoginRepository) : ViewModel() {
 
     private val _loginForm = MutableLiveData<LoginFormState>()
     val loginFormState: LiveData<LoginFormState> = _loginForm
@@ -24,12 +29,32 @@ class LoginViewModel @Inject constructor(private val loginRepository: LoginRepos
 
     fun login(username: String, password: String) {
         thread(true) {
-            val result = loginRepository.login(username, password)
+            val result = repository.login(username, password)
             if (result is Result.Success) {
                 _loginResult.postValue(LoginResult(success = result.data))
             } else {
                 _loginResult.postValue(LoginResult(error = R.string.login_failed))
             }
+        }
+    }
+
+    fun loginAPI(dto: LoginDTO) {
+        thread(true) {
+            repository.loginAPI(dto).enqueue(object : Callback<Response<User>> {
+                override fun onResponse(call: Call<Response<User>>, response: retrofit2.Response<Response<User>>) {
+                    if(response.isSuccessful) {
+                        val data = response.body()?.data
+                        _loginResult.postValue(LoginResult(success = data))
+                    }
+                    else {
+                        _loginResult.postValue(LoginResult(error = R.string.login_failed))
+                    }
+                }
+
+                override fun onFailure(call: Call<Response<User>>, t: Throwable) {
+                    _loginResult.postValue(LoginResult(error = R.string.login_failed))
+                }
+            })
         }
     }
 

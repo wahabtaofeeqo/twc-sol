@@ -5,6 +5,8 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.wristband.sol.data.Constants
 import com.wristband.sol.ui.home.ClockInFragment
+import com.wristband.sol.ui.home.ConfirmTicketFragment
+import com.wristband.sol.ui.home.ScanFragment
 import com.wristband.sol.ui.home.TicketFragment
 import com.wristband.sol.ui.home.ViewTicketFragment
 import dagger.hilt.android.AndroidEntryPoint
@@ -19,6 +21,7 @@ class MainActivity : AppCompatActivity() {
                 Constants.TICKET -> changeFragment(TicketFragment.newInstance())
                 Constants.CLOCK_IN ->  changeFragment(ClockInFragment.newInstance())
                 Constants.TICKETS ->  changeFragment(ViewTicketFragment.newInstance())
+                Constants.SCAN ->  changeFragment(ConfirmTicketFragment.newInstance())
             }
         }
     }

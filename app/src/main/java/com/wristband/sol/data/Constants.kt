@@ -2,6 +2,7 @@ package com.wristband.sol.data
 
 object Constants {
 
+    const val SCAN = "scan"
     const val PAGE = "page"
     const val TICKET = "ticket"
     const val TICKETS = "tickets"

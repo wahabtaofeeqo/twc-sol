@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.paging.PagingData
 import com.wristband.sol.data.Response
+import com.wristband.sol.data.model.Attendance
 import com.wristband.sol.data.model.BluetoothDetails
 import com.wristband.sol.data.model.Ticket
 import com.wristband.sol.data.repositories.TicketRepository
@@ -12,6 +13,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import retrofit2.Call
 import retrofit2.Callback
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import javax.inject.Inject
 import kotlin.concurrent.thread
 
@@ -29,6 +33,9 @@ class TicketViewModel @Inject constructor(private val repository: TicketReposito
 
     private val _bluetooth = MutableLiveData<BluetoothDetails>()
     val bluetooth: LiveData<BluetoothDetails> = _bluetooth
+
+    private val _ticket = MutableLiveData<Response<Ticket?>>()
+    val ticket: LiveData<Response<Ticket?>> = _ticket
 
     fun createTicket(model: Ticket) {
         thread(true) {
@@ -69,4 +76,18 @@ class TicketViewModel @Inject constructor(private val repository: TicketReposito
     fun bluetoothSelected(bluetoothDetails: BluetoothDetails) {
         _bluetooth.value = bluetoothDetails
     }
+
+    fun confirmCode(code: String) {
+        thread(start = true) {
+            val model = repository.findByCode(code)
+            if(model == null) {
+                _ticket.postValue(Response(false,  "Ticket does not exist"))
+                return@thread
+            }
+            else {
+                _ticket.postValue(Response(true, "Ticket is confirmed and it's valid"))
+            }
+        }
+    }
+
 }

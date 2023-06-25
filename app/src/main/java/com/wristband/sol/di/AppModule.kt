@@ -37,8 +37,8 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideLoginRepository(database: AppDatabase): LoginRepository {
-        return LoginRepository(database.userDao())
+    fun provideLoginRepository(retrofit: Retrofit, database: AppDatabase): LoginRepository {
+        return LoginRepository(retrofit.create(EndpointsInterface::class.java), database.userDao())
     }
 
     @Singleton

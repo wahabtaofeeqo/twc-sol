@@ -130,7 +130,7 @@ class TicketFragment : ValidationListener, CallbackListener, Fragment() {
             this.updateCost()
         }
 
-        // Save booking
+        // save booking
         binding.book.setOnClickListener {
             validator.validate()
         }
@@ -144,7 +144,9 @@ class TicketFragment : ValidationListener, CallbackListener, Fragment() {
         viewModel.createResponse.observe(requireActivity()) {
             val result = it?:return@observe
             if(result.status)  {
-                printLabel()
+                prepPrint(
+                    result.data!!.code,
+                    binding.accessQuantity.text.toString())
                 this.resetForm()
                 viewModel._createResponse.value = null
             }
@@ -260,7 +262,7 @@ class TicketFragment : ValidationListener, CallbackListener, Fragment() {
         binding.loading.isVisible = true
         val model = Ticket(name = "", phone = "",
             cost = calculateCost(), accessType = accessType.text.toString(),
-            accessQuantity = accessQuantity.text.toString().toInt(), date = Date())
+            accessQuantity = accessQuantity.text.toString().toInt(), date = Date(), code = generateCode())
 
         viewModel.createTicket(model)
     }
@@ -275,12 +277,11 @@ class TicketFragment : ValidationListener, CallbackListener, Fragment() {
         }
     }
 
-    private fun printLabel() {
+    private fun printLabel(code: String) {
         if (!connected) return
         try {
-            val code = generateCode()
-            val counter = sessionManager.increaseCounter()
 
+            val counter = sessionManager.increaseCounter()
             val result: Boolean = Printer.portManager!!
                 .writeDataImmediately(PrintContent.getLabel(requireContext(), code, counter))
             if (result) {
@@ -291,9 +292,7 @@ class TicketFragment : ValidationListener, CallbackListener, Fragment() {
         }
         catch (_ : Exception) {}
         finally {
-            if (Printer.portManager == null) {
-                Printer.close()
-            }
+            if (Printer.portManager == null) { Printer.close() }
         }
     }
 
@@ -335,8 +334,18 @@ class TicketFragment : ValidationListener, CallbackListener, Fragment() {
         // Toast.makeText(context, "Disconnect", Toast.LENGTH_SHORT).show()
     }
 
-    fun generateCode(): String {
+    private fun generateCode(): String {
         val randomPin = (Math.random() * 10000).toInt() + 1000
         return randomPin.toString()
+    }
+
+    private fun prepPrint(code: String, quantity: String) {
+        try {
+            val total = quantity.toInt()
+            for (i in 1..total) { printLabel(code) }
+        }
+        catch (e: Exception) {
+            Toast.makeText(context, "Error occur while printing!", Toast.LENGTH_LONG).show()
+        }
     }
 }

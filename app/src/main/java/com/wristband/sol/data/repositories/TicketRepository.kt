@@ -30,4 +30,8 @@ class TicketRepository @Inject constructor(private val api: EndpointsInterface, 
     }
 
     fun countAll() = dao.countAll()
+
+    fun findByCode(code: String): Ticket? {
+        return dao.findByCode(code)
+    }
 }

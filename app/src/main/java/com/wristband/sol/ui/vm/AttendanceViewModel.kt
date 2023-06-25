@@ -34,7 +34,6 @@ class AttendanceViewModel @Inject constructor(private val repository: Attendance
     fun verifyAndMark(code: String) {
         thread(start = true) {
 
-            //
             val model = memberRepository.findByCode(code)
             if(model == null) {
                 _attendance.postValue(Response(false,  "Member does not exist"))

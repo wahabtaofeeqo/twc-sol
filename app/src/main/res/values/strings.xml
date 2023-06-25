@@ -47,4 +47,7 @@
     <string name="view">View</string>
     <string name="action_connect_printer">Connect Printer</string>
     <string name="additional_packages">Additional packages</string>
+    <string name="action_logout">Logout</string>
+    <string name="action_confirm">Confirm</string>
+    <string name="prompt_qr">QR code</string>
 </resources>

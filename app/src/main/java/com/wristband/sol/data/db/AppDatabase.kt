@@ -14,7 +14,7 @@ import com.wristband.sol.data.model.User
 
 @TypeConverters(Converters::class)
 @Database(entities = [User::class, Ticket::class,
-    Member::class, Attendance::class], version = 2, exportSchema = true)
+    Member::class, Attendance::class], version = 1, exportSchema = true)
 abstract class AppDatabase : RoomDatabase() {
     companion object {
         const val DATABASE_NAME = "com.wristband.sol.db"

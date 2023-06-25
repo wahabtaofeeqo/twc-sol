@@ -33,6 +33,9 @@ data class Ticket(
     @ColumnInfo(name = "cost")
     var cost: Int,
 
+    @ColumnInfo(name = "code")
+    var code: String,
+
     @SerializedName("package_type")
     @ColumnInfo(name = "package_type")
     var packageType: String? = null,

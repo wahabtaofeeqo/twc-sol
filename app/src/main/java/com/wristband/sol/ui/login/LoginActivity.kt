@@ -13,6 +13,7 @@ import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.google.android.material.textfield.TextInputEditText
+import com.wristband.sol.data.LoginDTO
 import com.wristband.sol.data.SessionManager
 import com.wristband.sol.databinding.ActivityLoginBinding
 import com.wristband.sol.ui.vm.LoginViewModel
@@ -97,7 +98,11 @@ class LoginActivity : AppCompatActivity() {
 
             login.setOnClickListener {
                 loading.visibility = View.VISIBLE
-                viewModel.login(username.text.toString(), password.text.toString())
+                viewModel.loginAPI(
+                    LoginDTO(
+                        username.text.toString(), password.text.toString()
+                    )
+                )
             }
         }
     }

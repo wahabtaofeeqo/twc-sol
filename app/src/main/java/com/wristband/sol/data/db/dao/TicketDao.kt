@@ -27,4 +27,7 @@ interface TicketDao {
 
     @Delete
     fun delete(model: Ticket)
+
+    @Query("SELECT * FROM tickets WHERE code = :code LIMIT 1")
+    fun findByCode(code: String): Ticket?
 }
