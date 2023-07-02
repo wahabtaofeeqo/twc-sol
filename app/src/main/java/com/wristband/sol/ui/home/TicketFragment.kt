@@ -1,6 +1,7 @@
 package com.wristband.sol.ui.home
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -33,6 +34,7 @@ import com.wristband.sol.databinding.FragmentTicketBinding
 import com.wristband.sol.ui.login.afterTextChanged
 import com.wristband.sol.ui.vm.TicketViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 
@@ -280,10 +282,10 @@ class TicketFragment : ValidationListener, CallbackListener, Fragment() {
     private fun printLabel(code: String) {
         if (!connected) return
         try {
-
+            val todayDate = SimpleDateFormat("MM-dd-yyyy", Locale.getDefault()).format(Date())
             val counter = sessionManager.increaseCounter()
             val result: Boolean = Printer.portManager!!
-                .writeDataImmediately(PrintContent.getLabel(requireContext(), code, counter))
+                .writeDataImmediately(PrintContent.getLabel(requireContext(), todayDate, counter))
             if (result) {
                 //tipsDialog(getString(R.string.send_success))
             } else {

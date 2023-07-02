@@ -30,6 +30,8 @@ class WelcomeActivity : AppCompatActivity() {
 
     @Inject
     lateinit var adapter: TicketAdapter
+
+    @Inject
     lateinit var sessionManager: SessionManager
 
     private lateinit var binding: ActivityWelcomeBinding

@@ -15,13 +15,6 @@
         android:title="@string/action_sync" />
 
     <item
-        android:id="@+id/upload"
-        android:title="@string/action_upload"
-        app:showAsAction="ifRoom"
-        android:visible="false"
-        android:icon="@drawable/ic_baseline_file_upload_24"/>
-
-    <item
         android:id="@+id/members"
         app:showAsAction="never"
         android:title="@string/action_members" />

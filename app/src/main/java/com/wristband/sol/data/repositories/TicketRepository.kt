@@ -19,6 +19,8 @@ class TicketRepository @Inject constructor(private val api: EndpointsInterface, 
         return dao.insert(model)
     }
 
+    fun deleteAll() = dao.deleteAll()
+
     fun loadTickets(limit: Int): Flow<PagingData<Ticket>> {
         return Pager(
             PagingConfig(

@@ -1,6 +1,7 @@
 package com.wristband.sol.ui.home
 
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -21,6 +22,9 @@ import com.wristband.sol.ui.vm.TicketViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import javax.inject.Inject
 
 /**
@@ -38,6 +42,10 @@ class ViewTicketFragment : Fragment() {
     private lateinit var mainActivity: MainActivity
     private lateinit var binding: FragmentViewTicketBinding
     private val viewModel: TicketViewModel by viewModels()
+
+    val builder: AlertDialog.Builder? = activity?.let {
+        AlertDialog.Builder(it)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,25 +86,28 @@ class ViewTicketFragment : Fragment() {
             binding.progress.isVisible = false
             Toast.makeText(requireContext(), result.message, Toast.LENGTH_LONG).show()
         }
+
+        viewModel.delete.observe(requireActivity()) {
+            val result = it?:return@observe
+            binding.progress.isVisible = false
+            Toast.makeText(requireContext(), result.message, Toast.LENGTH_LONG).show()
+        }
     }
 
     @Deprecated("Deprecated in Java")
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.menu_toolbar, menu)
-
-        //
-        menu.findItem(R.id.sync).isVisible = false
-        menu.findItem(R.id.scan).isVisible = false
-        menu.findItem(R.id.upload).isVisible = true
-        menu.findItem(R.id.export).isVisible = false
-        menu.findItem(R.id.members).isVisible = false
+        inflater.inflate(R.menu.menu_view_tickets, menu)
     }
 
     @Deprecated("Deprecated in Java")
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if(item.itemId == R.id.upload) {
             this.postData()
+        }
+
+        if(item.itemId == R.id.delete) {
+            this.deleteData()
         }
 
         return super.onOptionsItemSelected(item)
@@ -112,6 +123,30 @@ class ViewTicketFragment : Fragment() {
             setPositiveButton("Okay") { _, _ ->
                 binding.progress.visibility = View.VISIBLE
                 viewModel.sendTicketsAPI()
+            }
+            setNegativeButton("Cancel") { dialog, _ ->
+                dialog.dismiss()
+            }
+        }
+
+        val dialog: AlertDialog? = builder?.create()
+        dialog?.show()
+    }
+
+    private fun deleteData() {
+
+        val builder: AlertDialog.Builder? = activity?.let {
+            AlertDialog.Builder(it)
+        }
+
+        val todayDate = SimpleDateFormat("MM-dd-yyyy", Locale.getDefault()).format(Date())
+        Log.i("@@@@@@@@TAG", "DATE $todayDate")
+
+        builder?.setMessage(R.string.delete_message)?.setTitle(R.string.delete_title)
+        builder?.apply {
+            setPositiveButton("Okay") { _, _ ->
+                binding.progress.visibility = View.VISIBLE
+                viewModel.deleteTickets();
             }
             setNegativeButton("Cancel") { dialog, _ ->
                 dialog.dismiss()

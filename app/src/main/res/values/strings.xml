@@ -50,4 +50,7 @@
     <string name="action_logout">Logout</string>
     <string name="action_confirm">Confirm</string>
     <string name="prompt_qr">QR code</string>
+    <string name="action_delete">Delete</string>
+    <string name="delete_title">Delete Tickets?</string>
+    <string name="delete_message">Make sure you already sync the Data with the Remote Server to prevent Data lost.</string>
 </resources>

@@ -37,6 +37,9 @@ class TicketViewModel @Inject constructor(private val repository: TicketReposito
     private val _ticket = MutableLiveData<Response<Ticket?>>()
     val ticket: LiveData<Response<Ticket?>> = _ticket
 
+    private val _delete = MutableLiveData<Response<String?>>()
+    val delete: LiveData<Response<String?>> = _delete
+
     fun createTicket(model: Ticket) {
         thread(true) {
             repository.create(model)
@@ -64,6 +67,13 @@ class TicketViewModel @Inject constructor(private val repository: TicketReposito
                     _postResponse.postValue(Response(false, "Operation not succeeded"))
                 }
             })
+        }
+    }
+
+    fun deleteTickets() {
+        thread(true) {
+            repository.deleteAll()
+            _delete.postValue(Response(true, "Tickets successfully deleted"))
         }
     }
 
