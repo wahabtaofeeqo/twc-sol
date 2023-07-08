@@ -282,7 +282,7 @@ class TicketFragment : ValidationListener, CallbackListener, Fragment() {
     private fun printLabel(code: String) {
         if (!connected) return
         try {
-            val todayDate = SimpleDateFormat("MM-dd-yyyy", Locale.getDefault()).format(Date())
+            val todayDate = SimpleDateFormat("MMddyyyy", Locale.getDefault()).format(Date())
             val counter = sessionManager.increaseCounter()
             val result: Boolean = Printer.portManager!!
                 .writeDataImmediately(PrintContent.getLabel(requireContext(), todayDate, counter))
