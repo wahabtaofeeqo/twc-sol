@@ -39,6 +39,8 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        toMain()
+
         val login = binding.login
         val loading = binding.loading
         val username = binding.username

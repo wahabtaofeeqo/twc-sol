@@ -30,7 +30,7 @@ object PrintContent {
      *
      * @return
      */
-    fun getLabel(context: Context, content: String, counter: Int): Vector<Byte> {
+    fun getLabel(context: Context, content: String, counter: Int, isChild: Boolean = false): Vector<Byte> {
 
         val tsc = LabelCommand()
 
@@ -58,14 +58,14 @@ object PrintContent {
         tsc.addCls()
 
         // Company
-        tsc.addText(
-            20, 1000,
-            LabelCommand.FONTTYPE.Bold,
-            LabelCommand.ROTATION.ROTATION_0,
-            LabelCommand.FONTMUL.MUL_1,
-            LabelCommand.FONTMUL.MUL_1,
-            "SolBeach"
-        )
+//        tsc.addText(
+//            20, 1000,
+//            LabelCommand.FONTTYPE.Bold,
+//            LabelCommand.ROTATION.ROTATION_0,
+//            LabelCommand.FONTMUL.MUL_1,
+//            LabelCommand.FONTMUL.MUL_1,
+//            "SolBeach"
+//        )
 
         // Number
         tsc.addText(
@@ -74,8 +74,7 @@ object PrintContent {
             LabelCommand.ROTATION.ROTATION_0,
             LabelCommand.FONTMUL.MUL_1,
             LabelCommand.FONTMUL.MUL_1,
-            "# $counter"
-        )
+            "# $counter")
 
         // Date
         val todayDate = SimpleDateFormat("dd MMMM yyyy", Locale.getDefault()).format(Date())
@@ -87,6 +86,17 @@ object PrintContent {
             LabelCommand.FONTMUL.MUL_1,
             todayDate
         )
+
+        if(isChild) {
+            tsc.addText(
+                20, 1200,
+                LabelCommand.FONTTYPE.Bold,
+                LabelCommand.ROTATION.ROTATION_0,
+                LabelCommand.FONTMUL.MUL_1,
+                LabelCommand.FONTMUL.MUL_1,
+                "Child"
+            )
+        }
 
         //打印繁体
         // tsc.addUnicodeText(30,50, LabelCommand.FONTTYPE.TRADITIONAL_CHINESE, LabelCommand.ROTATION.ROTATION_0, LabelCommand.FONTMUL.MUL_1, LabelCommand.FONTMUL.MUL_1,"BIG5碼繁體中文","BIG5");
@@ -107,8 +117,9 @@ object PrintContent {
 //        tsc.addText(330,80, LabelCommand.FONTTYPE.FONT_10, LabelCommand.ROTATION.ROTATION_0,LabelCommand.FONTMUL.MUL_1, LabelCommand.FONTMUL.MUL_1,"10");
 
         // 绘制图片
-        //val b = BitmapFactory.decodeResource(context.resources, R.mipmap.ic_priter)
-        // tsc.drawImage(30, 100, 300, b);
+        val b = BitmapFactory.decodeResource(context.resources, R.drawable.sol3)
+        tsc.drawImage(10, 1000, 250, b)
+        // tsc.drawImage(10, 1000, b, 200, 150)
         //val b2 = BitmapFactory.decodeResource(context.resources, R.drawable.flower)
         //tsc.drawJPGImage(200,250,200, b2);
 

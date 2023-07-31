@@ -146,10 +146,8 @@ class TicketFragment : ValidationListener, CallbackListener, Fragment() {
         viewModel.createResponse.observe(requireActivity()) {
             val result = it?:return@observe
             if(result.status)  {
-                prepPrint(
-                    result.data!!.code,
-                    binding.accessQuantity.text.toString())
                 this.resetForm()
+                prepPrint(result.data!!)
                 viewModel._createResponse.value = null
             }
 
@@ -279,13 +277,14 @@ class TicketFragment : ValidationListener, CallbackListener, Fragment() {
         }
     }
 
-    private fun printLabel(code: String) {
+    private fun printLabel(model: Ticket) {
         if (!connected) return
         try {
+            val isChild = model.accessType == "6 Years and below"
             val todayDate = SimpleDateFormat("MMddyyyy", Locale.getDefault()).format(Date())
             val counter = sessionManager.increaseCounter()
             val result: Boolean = Printer.portManager!!
-                .writeDataImmediately(PrintContent.getLabel(requireContext(), todayDate, counter))
+                .writeDataImmediately(PrintContent.getLabel(requireContext(), todayDate, counter, isChild))
             if (result) {
                 //tipsDialog(getString(R.string.send_success))
             } else {
@@ -341,10 +340,10 @@ class TicketFragment : ValidationListener, CallbackListener, Fragment() {
         return randomPin.toString()
     }
 
-    private fun prepPrint(code: String, quantity: String) {
+    private fun prepPrint(model: Ticket) {
         try {
-            val total = quantity.toInt()
-            for (i in 1..total) { printLabel(code) }
+            val total = model.accessQuantity
+            for (i in 1..total) { printLabel(model) }
         }
         catch (e: Exception) {
             Toast.makeText(context, "Error occur while printing!", Toast.LENGTH_LONG).show()
